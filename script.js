@@ -14,7 +14,7 @@ function bunkCalculations(){
     const daysToSkip = document.getElementById("daysToSkip");
     const attendanceAfterSkip = document.getElementById("attendanceAfterSkip");
 
-    if (totalClasses === 0 || classPerDay === 0) {
+    if (totalClasses === 0 || classPerDay === 0 || requiredPercentage === 0) {
         alert("Please enter valid numbers.");
         return;
     }
