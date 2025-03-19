@@ -21,7 +21,7 @@ A simple web-based **Attendance Calculator** that helps students determine their
    - **Days You Can Skip**  
    - **Attendance After Skipping**  
 
-## 🔧 Installation & Usage  
+## Installation & Usage  
 To run this project locally:  
 ```sh
 git clone https://github.com/your-username/AttendanceCalculator.git
