@@ -1,6 +1,7 @@
 const navItems = document.querySelectorAll('.nav-item');
 const navIndicator = document.querySelector('.nav-indicator');
 const cards = document.querySelectorAll('.card');
+
 function setIndicator(el) {
     navIndicator.style.width = `${el.offsetWidth}px`;
     navIndicator.style.left = `${el.offsetLeft}px`;
@@ -17,7 +18,9 @@ navItems.forEach(item => {
     item.addEventListener('click', () => {
         navItems.forEach(nav => nav.classList.remove('active'));
         item.classList.add('active');
+        
         setIndicator(item);
+        
         const targetId = item.getAttribute('data-target');
         cards.forEach(card => {
             card.classList.remove('active');
@@ -28,7 +31,6 @@ navItems.forEach(item => {
     });
 });
 
-// Overall attendance calculator
 const overallCalculateBtn = document.getElementById("overallCalculateBtn");
 overallCalculateBtn.addEventListener('click', calculateOverallAttendance);
 
@@ -49,20 +51,27 @@ function calculateOverallAttendance() {
     }
 
     const currentPercentage = (classesAttended / totalClasses) * 100;
-    const totalRequiredClasses = Math.ceil((totalClasses * requiredPercentage) / 100);
-    const remainingClassesAllowedToMiss = classesAttended - totalRequiredClasses;
-    const daysCount = Math.floor(remainingClassesAllowedToMiss / classPerDay);
-
+    
     percentage.textContent = currentPercentage.toFixed(2) + "%";
 
     if (currentPercentage < requiredPercentage) {
         Status.textContent = "On Danger";
         Status.className = 'result-value danger';
-        daysToSkip.textContent = '0';
-        attendanceAfterSkip.textContent = currentPercentage.toFixed(2) + "%";
+        
+        const requiredClasses = Math.ceil((requiredPercentage * totalClasses) / 100);
+        const classesNeeded = requiredClasses - classesAttended;
+        const daysNeeded = Math.ceil(classesNeeded / classPerDay);
+        
+        daysToSkip.textContent = `-${daysNeeded}`;
+        attendanceAfterSkip.textContent = "Need to attend more classes";
     } else {
         Status.textContent = "On Track";
         Status.className = 'result-value success';
+        
+        const totalRequiredClasses = Math.ceil((totalClasses * requiredPercentage) / 100);
+        const remainingClassesAllowedToMiss = classesAttended - totalRequiredClasses;
+        const daysCount = Math.floor(remainingClassesAllowedToMiss / classPerDay);
+        
         daysToSkip.textContent = daysCount > 0 ? daysCount : '0';
         attendanceAfterSkip.textContent = requiredPercentage + "%";
     }
@@ -71,6 +80,7 @@ function calculateOverallAttendance() {
 }
 
 let subjectCount = 1;
+
 const addSubjectBtn = document.getElementById("addSubjectBtn");
 addSubjectBtn.addEventListener('click', addSubjectForm);
 
@@ -103,6 +113,7 @@ function addSubjectForm() {
     `;
     
     document.getElementById('subjects-container').appendChild(subjectForm);
+    
     const removeButton = subjectForm.querySelector('.remove-subject-btn');
     removeButton.addEventListener('click', function() {
         subjectForm.remove();
@@ -124,11 +135,12 @@ calculateSubjectsBtn.addEventListener('click', calculateSubjectsAttendance);
 function calculateSubjectsAttendance() {
     const subjectForms = document.querySelectorAll('.subject-form');
     const resultsContainer = document.getElementById('subjectsResultContainer');
+    
     resultsContainer.innerHTML = '';
     
     let validInput = true;
     let results = [];
-
+    
     subjectForms.forEach((form, index) => {
         const subjectName = form.querySelector('.subject-name').value || `Subject ${index + 1}`;
         const requiredPercentage = parseInt(form.querySelector('.subject-required').value) || 0;
@@ -141,18 +153,26 @@ function calculateSubjectsAttendance() {
         }
         
         const currentPercentage = (classesAttended / totalClasses) * 100;
-        const totalRequiredClasses = Math.ceil((totalClasses * requiredPercentage) / 100);
-        const classesCanSkip = classesAttended - totalRequiredClasses;
-        
-        let status, statusClass;
+        let status, statusClass, classesInfo, attendanceAfterInfo;
         
         if (currentPercentage < requiredPercentage) {
             status = "On Danger";
             statusClass = "danger";
-            classesCanSkip = 0; 
+            
+            const requiredClasses = Math.ceil((requiredPercentage * totalClasses) / 100);
+            const classesNeeded = requiredClasses - classesAttended;
+            
+            classesInfo = `-${classesNeeded} (need to attend)`;
+            attendanceAfterInfo = "Need to attend more classes";
         } else {
             status = "On Track";
             statusClass = "success";
+            
+            const totalRequiredClasses = Math.ceil((totalClasses * requiredPercentage) / 100);
+            const classesCanSkip = classesAttended - totalRequiredClasses;
+            
+            classesInfo = classesCanSkip > 0 ? classesCanSkip : 0;
+            attendanceAfterInfo = requiredPercentage + "%";
         }
         
         results.push({
@@ -160,8 +180,8 @@ function calculateSubjectsAttendance() {
             currentPercentage: currentPercentage.toFixed(2),
             status,
             statusClass,
-            classesCanSkip: classesCanSkip > 0 ? classesCanSkip : 0,
-            attendanceAfterSkip: Math.max(requiredPercentage, currentPercentage).toFixed(2)
+            classesInfo,
+            attendanceAfterInfo
         });
     });
     
@@ -186,12 +206,12 @@ function calculateSubjectsAttendance() {
                 <span class="result-value ${result.statusClass}">${result.status}</span>
             </div>
             <div class="result-item">
-                <span class="result-label">Classes You Can Skip</span>
-                <span class="result-value">${result.classesCanSkip}</span>
+                <span class="result-label">Classes You Can ${result.statusClass === 'danger' ? 'Must Attend' : 'Skip'}</span>
+                <span class="result-value">${result.classesInfo}</span>
             </div>
             <div class="result-item">
-                <span class="result-label">Attendance After Skipping</span>
-                <span class="result-value">${result.attendanceAfterSkip}%</span>
+                <span class="result-label">Attendance After ${result.statusClass === 'danger' ? 'Attending' : 'Skipping'}</span>
+                <span class="result-value">${result.attendanceAfterInfo}</span>
             </div>
         `;
         
