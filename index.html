@@ -5,11 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Attendance Calculator</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">Class Bunker</div>
+            <div class="nav-links">
+                <div class="nav-item active" data-target="overall">Overall Attendance</div>
+                <div class="nav-item" data-target="subjects">Subject-wise Attendance</div>
+                <div class="nav-indicator"></div>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
-        <div class="card">
-            <h1>Attendance Calculator</h1>
+        <div class="card active" id="overall">
+            <h1>Overall Attendance Calculator</h1>
             
             <div class="intro-section">
                 <p>Welcome to the "Am I Skipping Too Much?" calculator! For when you need to know exactly how many classes you can miss without failing... for purely academic reasons, of course.</p>
@@ -32,7 +44,7 @@
                 <label for="totalClasses">Total Number of Classes</label>
                 <input type="number" id="totalClasses" min="1">
             </div>
-            <button class="btn">Calculate</button>
+            <button class="btn" id="overallCalculateBtn">Calculate</button>
             
             <div class="result-card">
                 <div class="result-title">Attendance Summary</div>
@@ -54,10 +66,52 @@
                 </div>
             </div>
         </div>
+        <div class="card" id="subjects">
+            <h1>Subject-wise Attendance Calculator</h1>
+            
+            <div class="intro-section">
+                <p>Track your attendance for individual subjects and find out how many more classes you can skip for each subject while still meeting the minimum requirement.</p>
+                <p>Add your subjects below and we'll help you optimize your strategic absences!</p>
+            </div>
+            
+            <div id="subjects-container">
+                <div class="subject-form">
+                    <div class="subject-header">
+                        <h3>Subject 1</h3>
+                        <button class="remove-subject-btn" title="Remove Subject"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="form-group">
+                        <label>Subject Name</label>
+                        <input type="text" class="subject-name" placeholder="e.g., Mathematics">
+                    </div>
+                    <div class="form-group">
+                        <label>Required Attendance (%)</label>
+                        <input type="number" class="subject-required" min="0" max="100" value="75">
+                    </div>
+                    <div class="form-group">
+                        <label>Classes Attended</label>
+                        <input type="number" class="subject-attended" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Total Classes</label>
+                        <input type="number" class="subject-total" min="1">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn secondary" id="addSubjectBtn"><i class="fas fa-plus"></i> Add Subject</button>
+                <button class="btn" id="calculateSubjectsBtn">Calculate All</button>
+            </div>
+            
+            <div class="subjects-result-container" id="subjectsResultContainer">
+            </div>
+        </div>
+        
         <div class="footer">
             <p>Remember: This tool was created for educational purposes only. We're not responsible for any dirty looks from professors or awkward "who are you again?" moments during office hours.</p>
         </div>
     </div>
-    <script src="/script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
